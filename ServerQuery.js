@@ -1,21 +1,19 @@
-// server.js
-const express = require('express');
-const { InfluxDB } = require('@influxdata/influxdb-client');
+import express from 'express';
+import {InfluxDB} from '@influxdata/influxdb-client';
+
 const app = express();
 const port = 3000;
 
-// InfluxDB connection details
-const token = 'your-influxdb-token';
-const org = 'your-org';
-const bucket = 'your-bucket';
+const token = '3n5pQs5JtNLSv3HVQsdCe02JNAgsBgcXQD46Zxg3EmyGpeiJC4tYodK9s5vKrePD3UW3nt5C5gIXEhLGEZCqHQ==';
+const org = 'Jonas-dahlbo-Nodejs';
+const bucket = 'environmental_data';
 const url = 'http://localhost:8086';
 
 const client = new InfluxDB({ url, token });
 const queryApi = client.getQueryApi(org);
 
-app.use(express.static('public')); // Serve static files from 'public' folder
+app.use(express.static('public'));
 
-// Endpoint to fetch weather data from InfluxDB
 app.get('/api/weather-data', async (req, res) => {
   const query = `
     from(bucket: "${bucket}")
