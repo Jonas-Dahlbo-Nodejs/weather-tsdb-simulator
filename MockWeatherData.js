@@ -1,5 +1,5 @@
-const {InfluxDB, Point} = require('@influxdata/influxdb-client');
-const fs = require('fs');
+import {InfluxDB, Point} from '@influxdata/influxdb-client';
+import * as fs from 'node:fs/promises';
 
 const token = '3n5pQs5JtNLSv3HVQsdCe02JNAgsBgcXQD46Zxg3EmyGpeiJC4tYodK9s5vKrePD3UW3nt5C5gIXEhLGEZCqHQ==';
 const org = 'Jonas-dahlbo-Nodejs';
@@ -7,7 +7,7 @@ const bucket = 'environmental_data';
 const url = 'http://localhost:8086';
 
 const client = new InfluxDB({url, token});
-const writeApi = client.writeApi(org, bucket, 'ns');
+const writeApi = client.getWriteApi(org, bucket, 'ms')
 
 const generateWeatherData = () => {
     const temperature = (Math.random() * 40).toFixed(3);
@@ -26,11 +26,11 @@ const insertData = async () => {
         const {temperature, humidity, pressure} = generateWeatherData();
         
 
-        const point = Point('weather')
+        const point = new Point('weather')
         .tag('location', 'home')
-        .field('temperature', temperature)
-        .field('humidity', humidity)
-        .field('pressure', pressure)
+        .floatField('temperature', temperature)
+        .floatField('humidity', humidity)
+        .floatField('pressure', pressure)
         .timestamp(timestamp);
 
         writeApi.writePoint(point);
