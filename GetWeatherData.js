@@ -1,19 +1,24 @@
 fetch('http://localhost:3000/api/environmental_data')
     .then(response => response.json())
     .then(data => {
-        const timestamps = data.map(item => new Date(item.timestamp).toLocaleTimeString());
+
+        data.reverse();
+        
+        const timestamps = data.map(item => new Date(item.timestamp));
         const temperatures = data.map(item => item.temperature);
         const humidity = data.map(item => item.humidity);
         const pressure = data.map(item => item.pressure);
 
-        console.log(pressure)
+        const time = timestamps.map(timestamp => timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        const date = timestamps.map(timestamp => timestamp.toLocaleDateString('en-GB', {weekday: 'long', year: 'numeric', month: '2-digit', day: '2-digit' }));
 
+        console.log(date);
         //Create Temperature Chart
         const ctxTemp = document.getElementById('temperatureChart').getContext('2d');
         new Chart(ctxTemp, {
             type: 'line',
             data: {
-                labels: timestamps,
+                labels: time,
                 datasets: [
                     {
                         label: 'Temperature (°C)',
@@ -27,10 +32,31 @@ fetch('http://localhost:3000/api/environmental_data')
                 responsive: true,
                 scales: {
                     x: {
+                        id: 'x-axis-time',
                         title: {
                             display: true,
                             text: 'Time'
                         }
+                    },
+                    x2: {
+                        id: 'x-axis-date',
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        display: true,
+                        grid: {
+                            display: false,
+                        },
+                        ticks: {
+                            callback: function(value, index) {
+                                const timeAtIndex = time[index]; 
+                                if (timeAtIndex === '01:00') {
+                                    return date[index];  
+                                }
+                                return ''; 
+                            }
+                        },
                     },
                     y: {
                         title: {
@@ -47,7 +73,7 @@ fetch('http://localhost:3000/api/environmental_data')
         new Chart(ctxHumidity, {
             type: 'line',
             data: {
-                labels: timestamps,
+                labels: time,
                 datasets: [
                     {
                         label: 'Humidity (%)',
@@ -61,10 +87,31 @@ fetch('http://localhost:3000/api/environmental_data')
                 responsive: true,
                 scales: {
                     x: {
+                        id: 'x-axis-time',
                         title: {
                             display: true,
                             text: 'Time'
                         }
+                    },
+                    x2: {
+                        id: 'x-axis-date',
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        display: true,
+                        grid: {
+                            display: false,
+                        },
+                        ticks: {
+                            callback: function(value, index) {
+                                const timeAtIndex = time[index]; 
+                                if (timeAtIndex === '01:00') {
+                                    return date[index];  
+                                }
+                                return ''; 
+                            }
+                        },
                     },
                     y: {
                         title: {
@@ -81,7 +128,7 @@ fetch('http://localhost:3000/api/environmental_data')
         new Chart(ctxPressure, {
             type: 'line',
             data: {
-                labels: timestamps, // Shared X-axis (time)
+                labels: time, 
                 datasets: [
                     {
                         label: 'Pressure (hPa)',
@@ -95,25 +142,36 @@ fetch('http://localhost:3000/api/environmental_data')
                 responsive: true,
                 scales: {
                     x: {
+                        id: 'x-axis-time',
                         title: {
                             display: true,
                             text: 'Time'
+                        }
+                    },
+                    x2: {
+                        id: 'x-axis-date',
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        display: true,
+                        grid: {
+                            display: false,
                         },
                         ticks: {
-                            autoSkip: true,
-                            maxTicksLimit: 10
-                        }
+                            callback: function(value, index) {
+                                const timeAtIndex = time[index]; 
+                                if (timeAtIndex === '01:00') {
+                                    return date[index];  
+                                }
+                                return ''; 
+                            }
+                        },
                     },
                     y: {
                         title: {
                             display: true,
                             text: 'Pressure (hPa)'
-                        },
-                        ticks: {
-                            min: 1000, // Set the minimum for pressure
-                            max: 1050, // Set the maximum for pressure
-                            stepSize: 10, // Optional: Control step size for better spacing
-                            beginAtZero: false, // Don't start from 0 since pressure values don't start at 0
                         }
                     }
                 }

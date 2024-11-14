@@ -21,7 +21,7 @@ app.use(express.static('public'));
 app.get('/api/environmental_data', async (req, res) => {
   const query = `
     from(bucket: "${bucket}")
-      |> range(start: -1d) 
+      |> range(start: -6d) 
       |> filter(fn: (r) => r["_measurement"] == "weather")
       |> filter(fn: (r) => r["_field"] == "temperature" or r["_field"] == "humidity" or r["_field"] == "pressure")
       |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
