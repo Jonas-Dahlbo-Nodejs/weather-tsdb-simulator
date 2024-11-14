@@ -7,7 +7,7 @@ const bucket = 'environmental_data';
 const url = 'http://localhost:8086';
 
 const client = new InfluxDB({url, token});
-const writeApi = client.getWriteApi(org, bucket, 'ms')
+const writeApi = client.getWriteApi(org, bucket, 'ns')
 
 const generateWeatherData = () => {
     const temperature = (Math.random() * 40).toFixed(3);
@@ -20,6 +20,7 @@ const generateWeatherData = () => {
 const insertData = async () => {
     const startTime = new Date();
     const dataPoints = 10000;
+    let successfulPoints = 0;
 
     for(let i = 0; i < dataPoints; i++) {
         const timestamp = new Date(startTime.getTime() + i * 5 * 60000);
@@ -28,14 +29,18 @@ const insertData = async () => {
 
         const point = new Point('weather')
         .tag('location', 'home')
-        .floatField('temperature', temperature)
-        .floatField('humidity', humidity)
-        .floatField('pressure', pressure)
+        .floatField('temperature', parseFloat(temperature))
+        .floatField('humidity', parseFloat(humidity))
+        .floatField('pressure', parseFloat(pressure))
         .timestamp(timestamp);
 
         writeApi.writePoint(point);
 
-        console.log(`Generated data: ${timestamp.toISOString()} - Temp: ${temperature}°C, Humidity: ${humidity}%, Pressure: ${pressure} hPa`);    console.log(`Generated data: ${timestamp.toISOString()} - Temp: ${temperature}°C, Humidity: ${humidity}%, Pressure: ${pressure} hPa`);
+        successfulPoints++;
+
+        if (successfulPoints % 100 === 0) {
+            console.log(`Successfully inserted ${successfulPoints} data points...`);
+        }
     }
 
     try {
