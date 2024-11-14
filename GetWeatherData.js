@@ -36,7 +36,7 @@ fetch('http://localhost:3000/api/environmental_data')
                         title: {
                             display: true,
                             text: 'Time'
-                        }
+                        },
                     },
                     x2: {
                         id: 'x-axis-date',
@@ -49,9 +49,12 @@ fetch('http://localhost:3000/api/environmental_data')
                             display: false,
                         },
                         ticks: {
+                            autoSkip: false,
                             callback: function(value, index) {
                                 const timeAtIndex = time[index]; 
-                                if (timeAtIndex === '01:00') {
+                                if (index === 0 || timeAtIndex.startsWith('00') && time[index - 1].startsWith('23')) {
+                                    console.log(`entered ${index}`);
+                                    console.log(`${date[index]}`)
                                     return date[index];  
                                 }
                                 return ''; 
@@ -104,9 +107,12 @@ fetch('http://localhost:3000/api/environmental_data')
                             display: false,
                         },
                         ticks: {
+                            autoSkip: false,
                             callback: function(value, index) {
                                 const timeAtIndex = time[index]; 
-                                if (timeAtIndex === '01:00') {
+                                if (index === 0 || timeAtIndex.startsWith('00') && time[index - 1].startsWith('23')) {
+                                    console.log(`entered ${index}`);
+                                    console.log(`${date[index]}`)
                                     return date[index];  
                                 }
                                 return ''; 
@@ -159,9 +165,12 @@ fetch('http://localhost:3000/api/environmental_data')
                             display: false,
                         },
                         ticks: {
+                            autoSkip: false,
                             callback: function(value, index) {
                                 const timeAtIndex = time[index]; 
-                                if (timeAtIndex === '01:00') {
+                                if (index === 0 || timeAtIndex.startsWith('00') && time[index - 1].startsWith('23')) {
+                                    console.log(`entered ${index}`);
+                                    console.log(`${date[index]}`)
                                     return date[index];  
                                 }
                                 return ''; 

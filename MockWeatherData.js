@@ -19,7 +19,9 @@ const generateWeatherData = (baseTemperature, baseHumidity , basePressure ) => {
 
 
 const insertData = async () => {
-    const startTime = new Date('2024-11-09T00:00:00Z').getTime() / 1000;
+    const fiveDaysAgo = new Date();
+    fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 5);
+    const startTime = fiveDaysAgo.getTime() / 1000;
     const interval = 60 * 60;
     const dataPoints = 24*5;
 
